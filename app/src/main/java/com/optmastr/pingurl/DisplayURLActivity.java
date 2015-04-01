@@ -3,6 +3,7 @@ package com.optmastr.pingurl;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +18,7 @@ public class DisplayURLActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_url);
 
+
         Intent intent = getIntent();
         String url = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
 
@@ -26,6 +28,7 @@ public class DisplayURLActivity extends ActionBarActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(false);
         webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
         webSettings.setUseWideViewPort(true);
 
         webView.setWebViewClient(new WebViewClient() {
@@ -63,9 +66,19 @@ public class DisplayURLActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (R.id.action_settings == id) {
             return true;
+        } else if (R.id.action_refresh == id) {
+            WebView webView = (WebView) findViewById(R.id.display_url_viewer);
+            webView.reload();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_display_url, menu);
+        return true;
     }
 }
