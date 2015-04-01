@@ -2,6 +2,7 @@ package com.optmastr.pingurl;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,9 +30,15 @@ public class DisplayURLActivity extends ActionBarActivity {
         webSettings.setSaveFormData(false);
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
+        webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
 
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onFormResubmission(WebView view, Message dontResend, Message resend) {
+                resend.sendToTarget();
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -65,12 +72,25 @@ public class DisplayURLActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        WebView webView = (WebView) findViewById(R.id.display_url_viewer);
+
         //noinspection SimplifiableIfStatement
-        if (R.id.action_settings == id) {
-            return true;
-        } else if (R.id.action_refresh == id) {
-            WebView webView = (WebView) findViewById(R.id.display_url_viewer);
-            webView.reload();
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_refresh:
+                webView.reload();
+                break;
+            case R.id.action_back:
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                }
+                break;
+            case R.id.action_next:
+                if (webView.canGoForward()) {
+                    webView.goForward();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
