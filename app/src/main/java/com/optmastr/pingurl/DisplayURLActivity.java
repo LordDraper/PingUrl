@@ -32,6 +32,7 @@ public class DisplayURLActivity extends ActionBarActivity {
         webSettings.setBuiltInZoomControls(true);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
+        webSettings.setDisplayZoomControls(false);
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -90,6 +91,9 @@ public class DisplayURLActivity extends ActionBarActivity {
                 if (webView.canGoForward()) {
                     webView.goForward();
                 }
+                break;
+            case R.id.action_clearcache:
+                MyActivity.clearCache(this);
                 break;
         }
         return super.onOptionsItemSelected(item);

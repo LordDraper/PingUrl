@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 
+import java.io.EOFException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,12 +27,13 @@ public class URLCheckerIntentService extends IntentService {
             connection.setRequestMethod("HEAD");
             int responseCode = connection.getResponseCode();
             connected = (200 <= responseCode && responseCode <= 399);
-        } catch (final MalformedURLException ex) {
-        } catch (final Exception ex) {
-        } finally {
-            if (null != connection) {
-                connection.disconnect();
-            }
+        } catch (MalformedURLException ex) {
+        } catch (EOFException ex) {
+            // EOFException may be android bug. Do not know how to handle.
+        } catch (Exception ex) {
+        }
+        if (null != connection) {
+            connection.disconnect();
         }
         return connected;
     }
