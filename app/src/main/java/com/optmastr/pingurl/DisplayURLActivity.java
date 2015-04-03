@@ -14,11 +14,30 @@ import android.webkit.WebViewClient;
 
 public class DisplayURLActivity extends ActionBarActivity {
 
+    private Menu _menu = null;
+
+    // Since the webview activity is not tracked, not yet know when to call the following.
+    public void setDefaultButtonStates() {
+        if (null != _menu) {
+            WebView webView = (WebView) findViewById(R.id.display_url_viewer);
+            for (int i = 0; i < _menu.size(); ++i) {
+                MenuItem menuItem = _menu.getItem(i);
+                switch (menuItem.getItemId()) {
+                    case R.id.action_back:
+                        menuItem.setEnabled(webView.canGoBack());
+                        break;
+                    case R.id.action_next:
+                        menuItem.setEnabled(webView.canGoForward());
+                        break;
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_url);
-
 
         Intent intent = getIntent();
         String url = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
@@ -44,6 +63,12 @@ public class DisplayURLActivity extends ActionBarActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                ((DisplayURLActivity) view.getContext()).setDefaultButtonStates();
+                super.onPageFinished(view, url);
             }
         });
 
@@ -96,6 +121,7 @@ public class DisplayURLActivity extends ActionBarActivity {
                 MyActivity.clearCache(this);
                 break;
         }
+        setDefaultButtonStates();
         return super.onOptionsItemSelected(item);
     }
 
@@ -103,6 +129,19 @@ public class DisplayURLActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_display_url, menu);
+        this._menu = menu;
+        setDefaultButtonStates();
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        WebView webView = (WebView) findViewById(R.id.display_url_viewer);
+        if (webView.canGoBack()) {
+            webView.goBack();
+            setDefaultButtonStates();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

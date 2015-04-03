@@ -66,7 +66,7 @@ public class URLCheckerIntentService extends IntentService {
             }
 
             Intent result = new Intent();
-            result.putExtra(URL_EXTRA, link);
+            result.putExtra(URL_EXTRA, link.toLowerCase());
             reply.send(this, validLink ? 1 : 0, result);
         } catch (PendingIntent.CanceledException ex) {
             // Do not know how to handle.
