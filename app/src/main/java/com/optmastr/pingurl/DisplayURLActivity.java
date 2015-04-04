@@ -103,6 +103,8 @@ public class DisplayURLActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.action_refresh:
                 webView.reload();
@@ -143,5 +145,10 @@ public class DisplayURLActivity extends ActionBarActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="saved_urls_count"
+        android:title="@string/pref_title_saved_urls_count"
+        android:defaultValue="@string/pref_default_saved_urls_count"
+        android:autoText="true"
+        android:text="@string/pref_default_saved_urls_count"
+        />
+
+    <CheckBoxPreference
+        android:key="http_conn_precheck"
+        android:title="@string/pref_title_http_conn_precheck"
+        android:defaultValue="1" />
+
+    <MultiSelectListPreference
+        android:key="http_conn_prefixes"
+        android:title="@string/pref_title_http_conn_prefixes"
+        android:dependency="http_conn_precheck"
+        android:defaultValue="@array/pref_http_prefixes_values"
+        android:entries="@array/pref_http_prefixes"
+        android:entryValues="@array/pref_http_prefixes"
+        />
+</PreferenceScreen>

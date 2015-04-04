@@ -78,6 +78,11 @@ public class MyActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_my, menu);
@@ -94,6 +99,8 @@ public class MyActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.action_clearcache:
                 MyActivity.clearCache(this);
@@ -127,9 +134,16 @@ public class MyActivity extends ActionBarActivity {
 
                 ListView saveURLListView = (ListView) findViewById(R.id.save_urls);
 
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String expr = prefs.getString("saved_urls_count", null);
+                int n = (null == expr) ? SAVED_URLS_SIZE : Integer.parseInt(expr);
+                if (n <= 0) {
+                    n = 0;
+                }
+
                 ArrayList<String> newSavedURLs = new ArrayList<>();
                 newSavedURLs.add(link);
-                for (int i = 0; i < Math.min(savedURLs.size(), SAVED_URLS_SIZE - 1); ++i) {
+                for (int i = 0; i < Math.min(savedURLs.size(), n - 1); ++i) {
                     String val = savedURLs.get(i);
                     if (!link.toLowerCase().equals(val.toLowerCase())) {
                         newSavedURLs.add(val);
@@ -140,7 +154,6 @@ public class MyActivity extends ActionBarActivity {
                 listAdapter = new ArrayAdapter<>(this, R.layout.simplerow, savedURLs);
                 saveURLListView.setAdapter(listAdapter);
 
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor pe = prefs.edit();
                 pe.putStringSet(SAVED_URLS, new HashSet<>(savedURLs));
                 pe.apply();

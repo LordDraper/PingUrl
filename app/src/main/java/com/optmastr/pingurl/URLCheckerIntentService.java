@@ -3,12 +3,15 @@ package com.optmastr.pingurl;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.io.EOFException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class URLCheckerIntentService extends IntentService {
 
@@ -48,14 +51,21 @@ public class URLCheckerIntentService extends IntentService {
         try {
             String link = intent.getStringExtra(URL_EXTRA);
 
-            Boolean validLink = checkURLConnection(link);
-            if (!validLink) {
-                ArrayList<String> prefixes = new ArrayList<>();
-                prefixes.add("http://");
-                prefixes.add("http://www.");
-                prefixes.add("https://");
-                prefixes.add("https://www.");
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            boolean httpPrecheck = prefs.getBoolean("http_conn_precheck", true);
 
+            Boolean validLink = httpPrecheck ? checkURLConnection(link) : true;
+            if (!validLink) {
+                Set<String> saveURLValues = prefs.getStringSet("http_conn_prefixes", null);
+                ArrayList<String> prefixes = new ArrayList<>();
+                if (null != saveURLValues) {
+                    prefixes.addAll(saveURLValues);
+                } else {
+                    prefixes.add("http://");
+                    prefixes.add("http://www.");
+                    prefixes.add("https://");
+                    prefixes.add("https://www.");
+                }
                 for (String prefix : prefixes) {
                     validLink = checkURLConnection(prefix + link);
                     if (validLink) {
@@ -64,7 +74,6 @@ public class URLCheckerIntentService extends IntentService {
                     }
                 }
             }
-
             Intent result = new Intent();
             result.putExtra(URL_EXTRA, link.toLowerCase());
             reply.send(this, validLink ? 1 : 0, result);

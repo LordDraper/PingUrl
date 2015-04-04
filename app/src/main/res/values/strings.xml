@@ -10,4 +10,21 @@
     <string name="button_send">Ping</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_display_url">URL Viewer</string>
+    <string name="pref_title_saved_urls_count">Saved URLs: </string>
+    <string name="pref_default_saved_urls_count">5</string>
+    <string name="pref_title_http_conn_precheck">HTTP PreConn</string>
+    <string name="pref_title_http_conn_prefixes">HTTP Prefixes</string>
+    <string-array name="empty_array"/>
+    <string-array name="pref_http_prefixes">
+        <item>http://</item>
+        <item>http://www</item>
+        <item>https://</item>
+        <item>https://www</item>
+    </string-array>
+    <string-array name="pref_http_prefixes_values">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
 </resources>
