@@ -67,6 +67,9 @@ public class URLCheckerIntentService extends IntentService {
                     prefixes.add("https://www.");
                 }
                 for (String prefix : prefixes) {
+                    if (prefix.equals("")) {
+                        continue;
+                    }
                     validLink = checkURLConnection(prefix + link);
                     if (validLink) {
                         link = prefix + link;
